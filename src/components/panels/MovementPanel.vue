@@ -18,7 +18,7 @@
 			<v-icon small class="mr-1">mdi-swap-horizontal</v-icon> {{ $t('panel.movement.caption') }}
 
 			<v-spacer></v-spacer>
-
+<!--
 			<v-menu offset-y left :disabled="uiFrozen">
 				<template #activator="{ on }">
 					<v-btn v-show="visibleAxes.length" color="primary" small class="mx-0" :disabled="uiFrozen" v-on="on">
@@ -62,6 +62,7 @@
 					</v-list>
 				</v-card>
 			</v-menu>
+			--->
 		</v-card-title>
 
 		<v-card-text v-show="visibleAxes.length">

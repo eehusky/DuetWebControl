@@ -37,7 +37,9 @@ a:not(:hover) {
 
 			<v-spacer></v-spacer>
 
-			<span v-if="machineMode">{{ $t('panel.status.mode', [machineMode.toUpperCase()]) }}</span>
+			<!--<span v-if="machineMode">{{ $t('panel.status.mode', [machineMode.toUpperCase()]) }}</span>-->
+			<span v-if="machineMode">{{ $t('panel.status.workspace', [workspaceNumber(move.workspaceNumber-1) ]) }}</span>
+
 		</v-card-title>
 
 		<v-card-text class="px-0 pt-0 pb-2 content text-xs-center" v-show="sensorsPresent || (visibleAxes.length + move.extruders.length)">
@@ -45,9 +47,7 @@ a:not(:hover) {
 			<template v-if="visibleAxes.length">
 				<v-row no-gutters class="flex-nowrap">
 					<v-col tag="strong" class="category-header">
-						<a href="javascript:void(0)" @click="displayToolPosition = !displayToolPosition">
-							{{ $t(displayToolPosition ? 'panel.status.toolPosition' : 'panel.status.machinePosition') }}
-						</a>
+							{{ $t('panel.status.toolPosition') }}
 					</v-col>
 
 					<v-col>
@@ -57,7 +57,7 @@ a:not(:hover) {
 									{{ axis.letter }}
 								</strong>
 								<span>
-									{{ displayAxisPosition(axis, index) }}
+									{{ displayAxisPosition(axis.userPosition) }}
 								</span>
 							</v-col>
 						</v-row>
@@ -65,7 +65,29 @@ a:not(:hover) {
 				</v-row>
 			</template>
 
-			<!-- Extruders -->
+			<template v-if="visibleAxes.length">
+				<v-divider v-show="move.axes.length + move.extruders.length" class="my-2"></v-divider>
+				<v-row no-gutters class="flex-nowrap">
+					<v-col tag="strong" class="category-header">
+							{{ $t('panel.status.machinePosition') }}
+					</v-col>
+
+					<v-col>
+						<v-row align-content="center" no-gutters>
+							<v-col v-for="(axis, index) in visibleAxes" :key="index" class="d-flex flex-column align-center">
+								<strong>
+									{{ axis.letter }}
+								</strong>
+								<span>
+									{{ displayAxisPosition(axis.machinePosition) }}
+								</span>
+							</v-col>
+						</v-row>
+					</v-col>
+				</v-row>
+			</template>
+
+			<!-- Extruders 
 			<template v-if="move.extruders.length">
 				<v-divider v-show="move.axes.length" class="my-2"></v-divider>
 
@@ -88,7 +110,7 @@ a:not(:hover) {
 					</v-col>
 				</v-row>
 			</template>
-
+--->
 			<!-- Speeds -->
 			<template v-show="isNumber(move.currentMove.requestedSpeed) || isNumber(move.currentMove.topSpeed)">
 				<v-divider v-show="move.axes.length + move.extruders.length" class="my-2"></v-divider>
@@ -97,26 +119,25 @@ a:not(:hover) {
 					<v-col tag="strong" class="category-header">
 						{{ $t('panel.status.speeds') }}
 					</v-col>
-
 					<v-col>
 						<v-row align-content="center" no-gutters>
-					<v-col v-if="isNumber(move.currentMove.requestedSpeed)" class="d-flex flex-column align-center">
-						<strong>
-							{{ $t('panel.status.requestedSpeed') }}
-						</strong>
-						<span>
-							{{ $display(move.currentMove.requestedSpeed, 0, 'mm/s') }}
-						</span>
-					</v-col>
+							<v-col v-if="isNumber(move.currentMove.requestedSpeed)" class="d-flex flex-column align-center">
+								<strong>
+									{{ $t('panel.status.requestedSpeed') }}
+								</strong>
+								<span>
+									{{ $display(move.currentMove.requestedSpeed, 0, 'mm/s') }}
+								</span>
+							</v-col>
 
-					<v-col v-if="isNumber(move.currentMove.topSpeed)" class="d-flex flex-column align-center">
-						<strong>
-							{{ $t('panel.status.topSpeed') }}
-						</strong>
-						<span>
-							{{ $display(move.currentMove.topSpeed, 0, 'mm/s') }}
-						</span>
-					</v-col>
+							<v-col v-if="isNumber(move.currentMove.topSpeed)" class="d-flex flex-column align-center">
+								<strong>
+									{{ $t('panel.status.topSpeed') }}
+								</strong>
+								<span>
+									{{ $display(move.currentMove.topSpeed, 0, 'mm/s') }}
+								</span>
+							</v-col>
 						</v-row>
 					</v-col>
 				</v-row>
@@ -197,10 +218,10 @@ a:not(:hover) {
 
 							<v-col v-if="probesPresent" class="d-flex flex-column align-center">
 								<strong>
-									{{ $tc('panel.status.probe', sensors.probes.length) }}
+									{{ $tc('panel.status.probe', probes.length) }}
 								</strong>
 								<div class="d-flex-inline">
-									<span v-for="(probe, index) in sensors.probes" :key="index" class="pa-1 probe-span" :class="probeSpanClasses(probe, index)">
+									<span v-for="(probe, index) in probes" :key="index" class="pa-1 probe-span" :class="probeSpanClasses(probe, index)">
 										{{ formatProbeValue(probe.value) }}
 									</span>
 								</div>
@@ -209,6 +230,37 @@ a:not(:hover) {
 					</v-col>
 				</v-row>
 			</template>
+		
+
+
+			<!-- Outputs -->
+			<template>
+				<v-divider v-show="move.axes.length || move.extruders.length || isNumber(move.currentMove.requestedSpeed) || isNumber(move.currentMove.topSpeed)" class="my-2"></v-divider>
+
+				<v-row align-content="center" no-gutters class="flex-nowrap">
+					<v-col tag="strong" class="category-header">
+						{{ $t('panel.status.outputs') }}
+					</v-col>
+				
+
+					<v-col>
+						<v-row align-content="center" justify="center" no-gutters>
+
+							<v-col v-for="gpo in displayGpOut()" :key="`gp-${gpo.name}`" class="d-flex flex-column align-center">
+									<strong>
+										{{ gpo.name }}
+									</strong>
+								<a href="javascript:void(0)" @click="gpoClick(gpo)">
+									{{ gpo.value }}
+								</a>
+							</v-col>
+
+						</v-row>
+					</v-col>
+				</v-row>
+			</template>
+
+
 		</v-card-text>
 
 		<v-card-text class="pa-0" v-show="!sensorsPresent && !(move.axes.length + move.extruders.length)">
@@ -222,10 +274,10 @@ a:not(:hover) {
 <script>
 'use strict'
 
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters,mapActions } from 'vuex'
 
 import { ProbeType, isPrinting } from '../../store/machine/modelEnums.js'
-
+import { DisconnectedError } from '../../utils/errors.js'
 export default {
 	computed: {
 		...mapState('settings', ['darkTheme']),
@@ -235,8 +287,11 @@ export default {
 			move: state => state.move,
 			machineMode: state => state.state.machineMode,
 			sensors: state => state.sensors,
-			status: state => state.state.status
+			status: state => state.state.status,
+			gpOut: state => state.state.gpOut,
+			state: state => state.state
 		}),
+		...mapState('machine/settings', ['gpoutput']),
 		...mapGetters(['isConnected']),
 		fanRPM() {
 			return this.fans
@@ -247,7 +302,7 @@ export default {
 				}), this);
 		},
 		probesPresent() {
-			return this.sensors.probes.some(probe => probe && probe.type !== ProbeType.none);
+			return this.sensors.probes.some(probe => probe && probe.type !== ProbeType.none) && this.state.currentTool != -1;
 		},
 		sensorsPresent() {
 			return ((this.boards.length && this.boards[0].vIn.current > 0) ||
@@ -258,6 +313,12 @@ export default {
 		},
 		visibleAxes() {
 			return this.move.axes.filter(axis => axis.visible);
+		},
+		probes() {
+			if( this.state.currentTool == -1){
+				return [{value:0}];
+			}
+			return [this.sensors.probes[this.state.currentTool]];
 		}
 	},
 	data() {
@@ -266,9 +327,54 @@ export default {
 		}
 	},
 	methods: {
+		...mapActions('machine', ['sendCode']),
+        workspaceNumber(index){
+            if( index < 6 ){
+                return 'G'+(54+index);
+            }else{
+                return 'G59.'+(index%5);
+            }
+        },
+		displayGpOut(){
+			var result = [];
+			var values = this.gpOut;
+			var mapped = this.gpoutput;
+			for (var i = 0; i < values.length; i++) {
+				if(values[i]!= null){
+					result.push({
+						name:mapped[i].name,
+						pin:i,
+						value:values[i].pwm == 0 ? 'Off' : 'On'
+					});
+				}
+			}
+			//console.log(this.gpOut);
+			//return this.gpOut.filter(x => x!=null);
+			return result;
+		},
+		gpoClick(gpo) {
+
+
+			try {
+				if (gpo.value === 'Off') {
+					this.sendCode('M42 S1 P'+gpo.pin);
+				} else {
+					// Select new tool
+					this.sendCode('M42 S0 P'+gpo.pin);
+
+				}
+			} catch (e) {
+				if (!(e instanceof DisconnectedError)) {
+					this.$log('error', e.message);
+				}
+			}
+
+			return gpo;
+		},
 		displayAxisPosition(axis) {
-			const position = this.displayToolPosition ? axis.userPosition : axis.machinePosition;
-			return (axis.letter === 'Z') ? this.$displayZ(position, false) : this.$display(position, 1);
+			//const position = this.displayToolPosition ? axis.userPosition : axis.machinePosition;
+			return this.$display(axis, 3);
+			//return (axis.letter === 'Z') ? this.$display(position, 3,true) : this.$display(position, 3, true);
 		},
 		formatProbeValue(values) {
 			if (values.length === 1) {

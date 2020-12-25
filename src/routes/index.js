@@ -33,12 +33,12 @@ export const Routing = [
 				component: Control.Console
 			},
 			// Height Map
-			{
-				icon: 'mdi-grid',
-				caption: 'menu.control.heightmap',
-				path: '/Heightmap',
-				component: Control.Heightmap
-			}
+			//{
+			//	icon: 'mdi-grid',
+			//	caption: 'menu.control.heightmap',
+			//	path: '/Heightmap',
+			//	component: Control.Heightmap
+			//}
 		]
 	},
 	// Job
@@ -90,12 +90,12 @@ export const Routing = [
 				component: Files.Macros
 			},
 			// Filaments
-			{
-				icon: 'mdi-radiobox-marked',
-				caption: 'menu.files.filaments',
-				path: '/Files/Filaments',
-				component: Files.Filaments
-			},
+			//{
+			//	icon: 'mdi-radiobox-marked',
+			//	caption: 'menu.files.filaments',
+			//	path: '/Files/Filaments',
+			//	component: Files.Filaments
+			//},
 			// Display
 			{
 				icon: 'mdi-format-list-numbered',

@@ -673,7 +673,9 @@ export default {
 		},
 		status: {
 			caption: 'Status',
+			outputs:'Outputs',
 			mode: 'Mode: {0}',
+			workspace: 'Workspace: {0}',
 			toolPosition: 'Tool Position',
 			machinePosition: 'Machine Position',
 			extruders: 'Extruder Drives',
@@ -697,6 +699,7 @@ export default {
 			allActiveTemperatures: 'Set all active temperatures',
 			allStandbyTemperatures: 'Set all standby temperatures',
 			tool: 'Tool {0}',
+			name: 'Name',
 			loadFilament: 'Load Filament',
 			changeFilament: 'Change Filament',
 			unloadFilament: 'Unload Filament',

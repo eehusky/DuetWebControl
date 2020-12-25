@@ -44,7 +44,18 @@ export default function(hostname) {
 				},
 				chamber: [90, 80, 70, 60, 50, 40, 0]
 			},
-			spindleRPM: [10000, 75000, 5000, 2500, 1000, 0]
+			spindleRPM: [10000, 75000, 5000, 2500, 1000, 0],
+			gpoutput: [
+				{ pin:0, name:'GPO_0',   },
+				{ pin:1, name:'GPO_1',   },
+				{ pin:2, name:'GPO_2',   },
+				{ pin:3, name:'GPO_3',   },
+				{ pin:4, name:'GPO_4',   },
+				{ pin:5, name:'GPO_5',   },
+				{ pin:6, name:'Lights',  },
+				{ pin:7, name:'Vacuum',  },
+				{ pin:8, name:'Spindle', },
+			]
 		},
 		getters: {
 			moveSteps: state => function(axis) {

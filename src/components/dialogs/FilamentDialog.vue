@@ -5,6 +5,7 @@
 				{{ $t(tool ? (tool.filament ? 'dialog.filament.titleChange' : 'dialog.filament.titleLoad') : 'generic.noValue') }}
 			</v-card-title>
 
+<!--
 			<v-card-text>
 				{{ $t('dialog.filament.prompt') }}
 
@@ -15,7 +16,7 @@
 					</v-list-item>
 				</v-list>
 			</v-card-text>
-
+-->
 			<v-card-actions>
 				<v-spacer></v-spacer>
 				<v-btn color="blue darken-1" text @click="hide">{{ $t('generic.cancel') }}</v-btn>

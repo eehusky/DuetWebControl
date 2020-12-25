@@ -17,6 +17,7 @@
     "file-saver": "^2.0.2",
     "izitoast": "^1.4.0",
     "jszip": "^3.3.0",
+    "nipplejs": "^0.8.7",
     "piecon": "^0.5.0",
     "roboto-fontface": "*",
     "three": "^0.114.0",

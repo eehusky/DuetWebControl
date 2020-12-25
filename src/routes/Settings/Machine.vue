@@ -22,6 +22,9 @@
 				<v-col cols="12" lg="3">
 					<settings-endstops-panel></settings-endstops-panel>
 				</v-col>
+				<v-col cols="12" lg="3">
+					<settings-gpo-panel></settings-gpo-panel>
+				</v-col>
 			</v-row>
 		</v-col>
 	</v-row>

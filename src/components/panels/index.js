@@ -28,6 +28,9 @@ import StatusPanel from './StatusPanel.vue'
 import ToolsPanel from './ToolsPanel.vue'
 import WebcamPanel from './WebcamPanel.vue'
 import ZBabystepPanel from './ZBabystepPanel.vue'
+import SettingsGPOPanel from './SettingsGPOPanel.vue'
+import NipplePanel from './NipplePanel.vue'
+import WorkspacePanel from './WorkspacePanel.vue'
 
 Vue.component('atx-panel', ATXPanel)
 Vue.component('extrude-panel', ExtrudePanel)
@@ -55,6 +58,9 @@ Vue.component('speed-factor-panel', SpeedFactorPanel)
 Vue.component('tools-panel', ToolsPanel)
 Vue.component('webcam-panel', WebcamPanel)
 Vue.component('z-babystep-panel', ZBabystepPanel)
+Vue.component('settings-gpo-panel', SettingsGPOPanel)
+Vue.component('nipple-panel', NipplePanel)
+Vue.component('workspace-panel', WorkspacePanel)
 
 export default {
 	ATXPanel,
@@ -82,5 +88,6 @@ export default {
 	StatusPanel,
 	ToolsPanel,
 	WebcamPanel,
-	ZBabystepPanel
+	ZBabystepPanel,
+	SettingsGPOPanel
 }

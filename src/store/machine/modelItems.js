@@ -227,6 +227,7 @@ export class GpInputPort {
 export class GpOutputPort {
 	constructor(initData) { quickPatch(this, initData); }
 	pwm = 0
+	name = null
 }
 
 export class Heater {

@@ -31,12 +31,13 @@ table.extra tr > td:first-child {
 			<panel-link :active="currentPage !== 'tools'" @click="currentPage = 'tools'" class="mr-2">
 				<v-icon small>mdi-wrench</v-icon> {{ $t('panel.tools.caption') }}
 			</panel-link>
+			<!--
 			<panel-link :active="currentPage !== 'extra'" @click="currentPage = 'extra'">
 				<v-icon small>mdi-plus</v-icon> {{ $t('panel.tools.extra.caption') }}
 			</panel-link>
-
+-->
 			<v-spacer></v-spacer>
-
+<!--
 			<v-menu v-model="dropdownShown" left offset-y :close-on-content-click="false">
 				<template #activator="{ on }">
 					<a v-on="on" href="javascript:void(0)">
@@ -55,62 +56,40 @@ table.extra tr > td:first-child {
 					</v-layout>
 				</v-card>
 			</v-menu>
+			--->
 		</v-card-title>
 
 		<v-card-text class="pa-0">
 			<template v-if="currentPage === 'tools'">
 				<table class="tools" v-show="canShowTools">
 					<thead>
-						<th class="pl-2">{{ $t('panel.tools.tool', ['']) }}</th>
-						<th class="px-1">{{ $t('panel.tools.heater', ['']) }}</th>
+						<th class="pl-1">{{ $t('panel.tools.tool', ['']) }}</th>
+						<th class="pl-1">{{ $t('panel.tools.name', ['']) }}</th>
+						<!--<th class="px-1">{{ $t('panel.tools.heater', ['']) }}</th>-->
 						<th class="px-1">{{ $t('panel.tools.current', ['']) }}</th>
 						<th class="px-1">{{ $t('panel.tools.active') }}</th>
-						<th class="pr-2">{{ $t('panel.tools.standby') }}</th>
+						<th class="pr-2">Offsets</th>
 					</thead>
 					<tbody>
 						<!-- Tools -->
 						<template v-for="(tool, toolIndex) in visibleTools">
 							<!-- Tool -->
 							<tr v-for="(toolHeater, toolHeaterIndex) in getToolHeaters(tool)" :key="`tool-${toolIndex}-${toolHeaterIndex}`" :class="{ [selectedToolClass] : (tool.number === state.currentTool) }">
-								<!-- Tool Name -->
-								<th v-if="toolHeaterIndex === 0" :rowspan="Math.max(1, tool.heaters.length)" class="pl-2" :class="{ 'pt-2 pb-2' : !tool.heaters.length && !toolHeater }">
-									<a href="javascript:void(0)" @click="toolClick(tool)">
-										{{ tool.name || $t('panel.tools.tool', [tool.number]) }}
-									</a>
-									<br>
+								
+								<th v-if="toolHeaterIndex === 0" :rowspan="Math.max(1, tool.heaters.length)" class="pl-1" :class="{ 'pt-2 pb-2' : !tool.heaters.length && !toolHeater }">
 									<span class="font-weight-regular caption">
 										T{{ tool.number }}
-
-										<template v-if="isConnected && canLoadFilament(tool)">
-											-
-											<v-menu v-if="getFilament(tool)" offset-y auto>
-												<template #activator="{ on }">
-													<a v-on="on" @click="filamentMenu.tool = tool" href="javascript:void(0)" class="font-weight-regular">
-														{{ getFilament(tool) }}
-													</a>
-												</template>
-
-												<v-list>
-													<v-list-item @click="filamentMenu.dialogShown = true">
-														<v-icon class="mr-1">mdi-swap-vertical</v-icon> {{ $t('panel.tools.changeFilament') }}
-													</v-list-item>
-													<v-list-item @click="unloadFilament">
-														<v-icon class="mr-1">mdi-arrow-up</v-icon> {{ $t('panel.tools.unloadFilament') }}
-													</v-list-item>
-												</v-list>
-											</v-menu>
-											<a v-else href="javascript:void(0)" @click="filamentMenu.tool = tool; filamentMenu.dialogShown = true">
-												{{ $t('panel.tools.loadFilament') }}
-											</a>
-										</template>
 									</span>
 								</th>
 
+								<!-- Tool Name -->
+								<th v-if="toolHeaterIndex === 0" :rowspan="Math.max(1, tool.heaters.length)" class="pl-1" :class="{ 'pt-2 pb-2' : !tool.heaters.length && !toolHeater }">
+									<a href="javascript:void(0)" @click="toolClick(tool)">
+										{{ tool.name || $t('panel.tools.tool', [tool.number]) }}
+									</a>
+								</th>
+
 								<template v-if="!toolHeater && getSpindle(tool)">
-									<!-- Spindle Name -->
-									<th>
-										<!-- unused -->
-									</th>
 
 									<!-- Current RPM -->
 									<td class="text-center">
@@ -121,30 +100,11 @@ table.extra tr > td:first-child {
 									<td>
 										<tool-input :spindle="getSpindle(tool)" :spindle-index="getSpindleIndex(tool)" active></tool-input>
 									</td>
-
-									<!-- Standby RPM -->
 									<td>
-										<!-- unused -->
+										{{ tool.offsets[0] }}, {{ tool.offsets[1]}}, {{ tool.offsets[2] }}
 									</td>
 								</template>
 								<template v-else>
-									<!-- Heater Name -->
-									<th>
-										<template v-if="toolHeater">
-											<a href="javascript:void(0)" @click="toolHeaterClick(tool, toolHeater)" :class="getHeaterColor(tool.heaters[toolHeaterIndex])">
-												{{ getHeaterName(toolHeater, tool.heaters[toolHeaterIndex]) }}
-											</a>
-											<template v-if="toolHeater.state !== null">
-												<br>
-												<span class="font-weight-regular caption">
-													{{ $t(`generic.heaterStates.${toolHeater.state}`) }}
-												</span>
-											</template>
-										</template>
-										<span v-else>
-											{{ $t('generic.noValue') }}
-										</span>
-									</th>
 
 									<!-- Heater value -->
 									<td>
@@ -153,12 +113,10 @@ table.extra tr > td:first-child {
 
 									<!-- Heater active -->
 									<td class="pl-2 pr-1">
-										<tool-input :tool="tool" :tool-heater-index="toolHeaterIndex" active></tool-input>
+										{{ getHeaterValue(toolHeater) }}
 									</td>
-
-									<!-- Heater standby -->
-									<td class="pl-1 pr-2">
-										<tool-input :tool="tool" :tool-heater-index="toolHeaterIndex" standby></tool-input>
+									<td>
+										{{ tool.offsets[0] }}, {{ tool.offsets[1]}}, {{ tool.offsets[2] }}
 									</td>
 								</template>
 							</tr>
@@ -270,6 +228,7 @@ table.extra tr > td:first-child {
 								</tr>
 							</template>
 						</template>
+
 					</tbody>
 				</table>
 
@@ -306,6 +265,7 @@ table.extra tr > td:first-child {
 					{{ $t('panel.tools.extra.noItems') }}
 				</v-alert>
 			</template>
+
 		</v-card-text>
 	</v-card>
 </template>

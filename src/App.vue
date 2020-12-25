@@ -106,19 +106,17 @@ textarea {
 			<v-scroll-y-transition>
 				<v-container v-show="!hideGlobalContainer || $vuetify.breakpoint.mdAndUp" id="global-container" fluid class="py-0">
 					<v-row>
-						<v-col cols="12" sm="6" md="4" lg="4" xl="4">
+						<v-col cols="12" sm="7" md="6" lg="6" xl="5">
 							<status-panel></status-panel>
 						</v-col>
 
-						<v-col cols="12" sm="6" md="5" lg="5" xl="4">
-							<tools-panel></tools-panel>
-						</v-col>
-
-						<v-col v-if="$vuetify.breakpoint.mdAndUp" :class="{ 'd-flex': hasTemperaturesToDisplay }" md="3" lg="3" xl="4">
-							<temperature-chart></temperature-chart>
+						<v-col cols="12" sm="7" md="6" lg="6" xl="5">
+								<tools-panel></tools-panel>
+								<workspace-panel></workspace-panel>
 						</v-col>
 					</v-row>
 				</v-container>
+
 			</v-scroll-y-transition>
 
 			<v-divider v-show="!hideGlobalContainer || $vuetify.breakpoint.mdAndUp"></v-divider>

@@ -2,6 +2,8 @@
 	<v-row>
 		<v-col xs="12" sm="8" md="8" lg="9" xl="9">
 			<movement-panel class="mb-2"></movement-panel>
+			<!--<nipple-panel class="mb-2"></nipple-panel>-->
+
 
 			<v-row v-if="isFFForUnset">
 				<v-col sm="12" :md="(atxPower !== null) ? 9 : 12" :lg="(atxPower !== null) ? 9 : 12" :xl="(atxPower !== null) ? 10 : 12">
@@ -14,7 +16,7 @@
 			</v-row>
 
 			<v-row>
-				<v-col sm="12" :md="(!isFFForUnset && atxPower !== null) ? 9 : 12" :lg="(!isFFForUnset && atxPower !== null) ? 9 : 12" :xl="(!isFFForUnset && atxPower !== null) ? 10 : 12">
+				<v-col v-if="isFFForUnset" sm="12" :md="(!isFFForUnset && atxPower !== null) ? 9 : 12" :lg="(!isFFForUnset && atxPower !== null) ? 9 : 12" :xl="(!isFFForUnset && atxPower !== null) ? 10 : 12">
 					<fan-panel></fan-panel>
 				</v-col>
 
