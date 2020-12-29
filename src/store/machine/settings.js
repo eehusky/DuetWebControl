@@ -51,8 +51,8 @@ export default function(hostname) {
 				{ pin:2, name:'GPO_2',   },
 				{ pin:3, name:'GPO_3',   },
 				{ pin:4, name:'GPO_4',   },
-				{ pin:5, name:'GPO_5',   },
-				{ pin:6, name:'Lights',  },
+				{ pin:5, name:'Lights',   },
+				{ pin:6, name:'GPO_6',  },
 				{ pin:7, name:'Vacuum',  },
 				{ pin:8, name:'Spindle', },
 			]
