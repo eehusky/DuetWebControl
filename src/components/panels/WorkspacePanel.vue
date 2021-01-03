@@ -27,6 +27,7 @@ table.tools td {
 
         <v-card-text class="pa-0">
             <template>
+                
                 <table class="tools">
                     <thead>
                         <th class="pl-1">Workspace</th>
@@ -39,15 +40,16 @@ table.tools td {
                         <template v-for="(work, workIndex) in workspaces">
                             <tr :key="`div-tool-${workIndex}`" :class="{ [selectedToolClass] : (workIndex === move.workspaceNumber-1) }">
                                 <a href="javascript:void(0)" @click="workspaceClick(workIndex)">
-                                    <td>{{ workspaceNumber(workIndex) }}</td>
+                                    <td class="pl-1">{{ workspaceNumber(workIndex) }}</td>
                                 </a>
-                                <td>{{ $display(work[0], 3, 'mm') }}</td>
-                                <td>{{ $display(work[1], 3, 'mm') }}</td>
-                                <td>{{ $display(work[2], 3, 'mm') }}</td>
+                                <td class="pl-1">{{ $display(work[0], 3) }}</td>
+                                <td class="px-1">{{ $display(work[1], 3) }}</td>
+                                <td class="px-1">{{ $display(work[2], 3) }}</td>
                             </tr>
                         </template>
                     </tbody>
                 </table>
+
             </template>
         </v-card-text>
 
