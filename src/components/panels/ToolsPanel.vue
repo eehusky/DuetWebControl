@@ -31,32 +31,7 @@ table.extra tr > td:first-child {
 			<panel-link :active="currentPage !== 'tools'" @click="currentPage = 'tools'" class="mr-2">
 				<v-icon small>mdi-wrench</v-icon> {{ $t('panel.tools.caption') }}
 			</panel-link>
-			<!--
-			<panel-link :active="currentPage !== 'extra'" @click="currentPage = 'extra'">
-				<v-icon small>mdi-plus</v-icon> {{ $t('panel.tools.extra.caption') }}
-			</panel-link>
--->
 			<v-spacer></v-spacer>
-<!--
-			<v-menu v-model="dropdownShown" left offset-y :close-on-content-click="false">
-				<template #activator="{ on }">
-					<a v-on="on" href="javascript:void(0)">
-						<v-icon small>mdi-menu-down</v-icon> {{ $t('panel.tools.controlAll') }}
-					</a>
-				</template>
-
-				<v-card>
-					<v-layout justify-center column class="pt-2 px-2">
-						<v-btn block color="primary" class="mb-3 pa-2" :disabled="!canTurnEverythingOff" @click="turnEverythingOff">
-							<v-icon class="mr-1">mdi-power-standby</v-icon> {{ $t('panel.tools.turnEverythingOff') }}
-						</v-btn>
-
-						<tool-input ref="allActive" :label="$t('panel.tools.allActiveTemperatures')" all active></tool-input>
-						<tool-input :label="$t('panel.tools.allStandbyTemperatures')" all standby></tool-input>
-					</v-layout>
-				</v-card>
-			</v-menu>
-			--->
 		</v-card-title>
 
 		<v-card-text class="pa-0">
@@ -65,7 +40,6 @@ table.extra tr > td:first-child {
 					<thead>
 						<th class="pl-1">{{ $t('panel.tools.tool', ['']) }}</th>
 						<th class="pl-1">{{ $t('panel.tools.name', ['']) }}</th>
-						<!--<th class="px-1">{{ $t('panel.tools.heater', ['']) }}</th>-->
 						<th class="px-1">{{ $t('panel.tools.current', ['']) }}</th>
 						<th class="px-1">{{ $t('panel.tools.active') }}</th>
 						<th class="pr-2">Offsets</th>
@@ -77,47 +51,23 @@ table.extra tr > td:first-child {
 							<tr v-for="(toolHeater, toolHeaterIndex) in getToolHeaters(tool)" :key="`tool-${toolIndex}-${toolHeaterIndex}`" :class="{ [selectedToolClass] : (tool.number === state.currentTool) }">
 								
 								<th v-if="toolHeaterIndex === 0" :rowspan="Math.max(1, tool.heaters.length)" class="pl-1" :class="{ 'pt-2 pb-2' : !tool.heaters.length && !toolHeater }">
-									<span class="font-weight-regular caption">
-										T{{ tool.number }}
-									</span>
+									<span class="font-weight-regular caption"> T{{ tool.number }} </span>
 								</th>
 
-								<!-- Tool Name -->
 								<th v-if="toolHeaterIndex === 0" :rowspan="Math.max(1, tool.heaters.length)" class="pl-1" :class="{ 'pt-2 pb-2' : !tool.heaters.length && !toolHeater }">
-									<a href="javascript:void(0)" @click="toolClick(tool)">
-										{{ tool.name || $t('panel.tools.tool', [tool.number]) }}
-									</a>
+									<a href="javascript:void(0)" @click="toolClick(tool)"> {{ tool.name || $t('panel.tools.tool', [tool.number]) }} </a>
 								</th>
 
 								<template v-if="!toolHeater && getSpindle(tool)">
-
-									<!-- Current RPM -->
-									<td class="text-center">
-										{{ $display(getSpindle(tool).current, 0, $t('generic.rpm')) }}
-									</td>
-
-									<!-- Active RPM -->
-									<td>
-										<tool-input :spindle="getSpindle(tool)" :spindle-index="getSpindleIndex(tool)" active></tool-input>
-									</td>
-									<td>
-										{{ tool.offsets[0] }}, {{ tool.offsets[1]}}, {{ tool.offsets[2] }}
-									</td>
+									<td class="text-center"> {{ $display(getSpindle(tool).current, 0, $t('generic.rpm')) }} </td>
+									<td> <tool-input :spindle="getSpindle(tool)" :spindle-index="getSpindleIndex(tool)" active></tool-input> </td>
+									<td> {{ tool.offsets[0] }}, {{ tool.offsets[1]}}, {{ tool.offsets[2] }} </td>
 								</template>
+
 								<template v-else>
-
-									<!-- Heater value -->
-									<td>
-										{{ getHeaterValue(toolHeater) }}
-									</td>
-
-									<!-- Heater active -->
-									<td class="pl-2 pr-1">
-										{{ getHeaterValue(toolHeater) }}
-									</td>
-									<td>
-										{{ tool.offsets[0] }}, {{ tool.offsets[1]}}, {{ tool.offsets[2] }}
-									</td>
+									<td> {{ getHeaterValue(toolHeater) }} </td>
+									<td class="pl-2 pr-1"> {{ getHeaterValue(toolHeater) }} </td>
+									<td> {{ tool.offsets[0] }}, {{ tool.offsets[1]}}, {{ tool.offsets[2] }} </td>
 								</template>
 							</tr>
 
@@ -129,141 +79,12 @@ table.extra tr > td:first-child {
 							</tr>
 						</template>
 
-						<!-- Beds -->
-						<template v-for="(bedHeater, bedIndex) in bedHeaters">
-							<template v-if="bedHeater">
-								<!-- Divider -->
-								<tr v-if="visibleTools.length" :key="`div-bed-${bedIndex}`">
-									<td colspan="5">
-										<v-divider></v-divider>
-									</td>
-								</tr>
-
-								<!-- Bed -->
-								<tr :key="`bed-${bedIndex}-0`">
-									<!-- Bed name -->
-									<th class="pl-2">
-										<a href="javascript:void(0)" @click="bedHeaterClick(bedHeater, bedIndex)">
-											{{ $t('panel.tools.bed', [hasOneBed ? '' : bedIndex]) }}
-										</a>
-									</th>
-
-									<!-- Heater name -->
-									<th>
-										<a href="javascript:void(0)" @click="bedHeaterClick(bedHeater, bedIndex)" :class="getHeaterColor(heat.bedHeaters[bedIndex])">
-											{{ getHeaterName(bedHeater, heat.bedHeaters[bedIndex]) }}
-										</a>
-										<template v-if="bedHeater.state !== null">
-											<br>
-											<span class="font-weight-regular caption">
-												{{ $t(`generic.heaterStates.${bedHeater.state}`) }}
-											</span>
-										</template>
-									</th>
-
-									<!-- Heater value -->
-									<td>
-										{{ getHeaterValue(bedHeater) }}
-									</td>
-
-									<!-- Heater active -->
-									<td class="pl-2 pr-1">
-										<tool-input :bed="bedHeater" :bed-index="bedIndex" active></tool-input>
-									</td>
-
-									<!-- Heater standby -->
-									<td class="pl-1 pr-2">
-										<tool-input :bed="bedHeater" :bed-index="bedIndex" standby></tool-input>
-									</td>	
-								</tr>
-							</template>
-						</template>
-
-						<!-- Chambers -->
-						<template v-for="(chamberHeater, chamberIndex) in chamberHeaters">
-							<template v-if="chamberHeater">
-								<!-- Divider -->
-								<tr :key="`div-chamber-${chamberIndex}`">
-									<td colspan="5">
-										<v-divider></v-divider>
-									</td>
-								</tr>
-
-								<!-- Chamber -->
-								<tr :key="`chamber-${chamberIndex}-0`">
-									<!-- Chamber name -->
-									<th class="pl-2">
-										<a href="javascript:void(0)" @click="chamberHeaterClick(chamberHeater, chamberIndex)">
-											{{ $t('panel.tools.chamber', [hasOneChamber ? '' : chamberIndex]) }}
-										</a>
-									</th>
-
-									<!-- Heater name -->
-									<th>
-										<a href="javascript:void(0)" @click="chamberHeaterClick(chamberHeater, chamberIndex)" :class="getHeaterColor(heat.chamberHeaters[chamberIndex])">
-											{{ getHeaterName(chamberHeater, heat.chamberHeaters[chamberIndex]) }}
-										</a>
-										<template v-if="chamberHeater.state !== null">
-											<br>
-											<span class="font-weight-regular caption">
-												{{ $t(`generic.heaterStates.${chamberHeater.state}`) }}
-											</span>
-										</template>
-									</th>
-
-									<!-- Heater value -->
-									<td>
-										{{ getHeaterValue(chamberHeater) }}
-									</td>
-
-									<!-- Heater active -->
-									<td class="pl-2 pr-1">
-										<tool-input :chamber="chamberHeater" :chamber-index="chamberIndex" active></tool-input>
-									</td>
-
-									<!-- Heater standby -->
-									<td class="pl-1 pr-2">
-										<tool-input :chamber="chamberHeater" :chamber-index="chamberIndex" standby></tool-input>
-									</td>	
-								</tr>
-							</template>
-						</template>
 
 					</tbody>
 				</table>
 
-				<v-alert :value="!canShowTools" type="info" class="mb-0">
-					{{ $t('panel.tools.noTools') }}
-				</v-alert>
+				<v-alert :value="!canShowTools" type="info" class="mb-0"> {{ $t('panel.tools.noTools') }} </v-alert>
 
-				<reset-heater-fault-dialog :shown.sync="resetHeaterFault" :heater="faultyHeater"></reset-heater-fault-dialog>
-				<filament-dialog :shown.sync="filamentMenu.dialogShown" :tool="filamentMenu.tool"></filament-dialog>
-			</template>
-
-			<template v-else-if="currentPage === 'extra'">
-				<table class="extra ml-2 mr-2" v-show="extraSensors.length">
-					<thead>
-						<th class="hidden-sm-and-down"></th>
-						<th>{{ $t('panel.tools.extra.sensor') }}</th>
-						<th>{{ $t('panel.tools.extra.value') }}</th>
-					</thead>
-					<tbody>
-						<tr v-for="extraItem in extraSensors" :key="`extra-${extraItem.index}`">
-							<td class="hidden-sm-and-down">
-								<v-switch class="ml-3" :input-value="displayedExtraTemperatures.indexOf(extraItem.index) !== -1" @change="toggleExtraVisibility(extraItem.index)" :label="$t('panel.tools.extra.showInChart')" :disabled="uiFrozen"></v-switch>
-							</td>
-							<th class="py-2" :class="getExtraColor(extraItem.index)">
-								{{ formatExtraName(extraItem) }}
-							</th>
-							<td class="py-2">
-								{{ formatSensorValue(extraItem.sensor) }}
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<v-alert :value="!extraSensors.length" type="info">
-					{{ $t('panel.tools.extra.noItems') }}
-				</v-alert>
 			</template>
 
 		</v-card-text>
